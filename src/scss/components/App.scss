@@ -1,0 +1,16 @@
+.root {
+  position: relative;
+}
+.app {
+  &__column-wrapper {
+    width: 96%;
+    padding: 0 2% 0 2%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  &__column-item {
+    list-style-type: none;
+    min-width: 24%;
+  }
+}
