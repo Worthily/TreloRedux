@@ -1,19 +1,24 @@
-import React, { useState } from "react";
-import Column from "./components/Column";
-import LoginPopup from "./components/LoginPopup";
-import CreateCard from "./components/CreateCard";
-import ShowCardPopup from "./components/ShowCardPopup";
-import StorageServise from "./store/StorageServise";
-import { cards, comments, user } from "./types";
+import React, { useState } from 'react';
+import Column from './components/Column';
+import LoginPopup from './components/LoginPopup';
+import CreateCard from './components/CreateCard';
+import ShowCardPopup from './components/ShowCardPopup';
+import StorageServise from './store/StorageServise';
+import { cards, comments, user } from './types';
+import { connect } from 'react-redux';
+import { inc } from './store/actions';
 
-function App() {
+function App(props: {
+  counter: number;
+  inc(value: number): { type: string; value: number };
+}) {
   const appStorage = new StorageServise();
   const [user, setUser] = useState(appStorage.getUser());
   const [cards, setCards] = useState(appStorage.getCards());
   const [comments, setComments] = useState(appStorage.getComments());
   const [columns, setColumns] = useState(appStorage.getColumns());
-  const [createCardId, setCreateCardId] = useState("");
-  const [showCardId, setShowCardId] = useState("");
+  const [createCardId, setCreateCardId] = useState('');
+  const [showCardId, setShowCardId] = useState('');
   const [listenerESC, setListenerESC] = useState(false);
 
   function onCradChecked(id: string): void {
@@ -34,7 +39,7 @@ function App() {
 
     appStorage.setCards(newArr);
     setCards(newArr);
-    setShowCardId("");
+    setShowCardId('');
 
     const commentsId: string[] = [];
     for (const item of comments) {
@@ -100,9 +105,9 @@ function App() {
       const newCards = [...cards, card];
       appStorage.setCards(newCards);
       setCards(newCards);
-      setCreateCardId("");
+      setCreateCardId('');
     } else {
-      setCreateCardId("");
+      setCreateCardId('');
     }
   }
 
@@ -111,7 +116,7 @@ function App() {
   }
 
   function onCloseCardPopup(): void {
-    setShowCardId("");
+    setShowCardId('');
   }
 
   function addListener(): void {
@@ -207,7 +212,7 @@ function App() {
   }
 
   let showCardPopup: JSX.Element = <></>;
-  if (showCardId !== "") {
+  if (showCardId !== '') {
     const card = cards.find((elem) => elem.id === showCardId);
 
     if (card !== undefined) {
@@ -260,12 +265,14 @@ function App() {
       </li>
     );
   });
+  let todotext: string = '';
 
   return (
     <header className="app">
+      {todotext}
       {showCardPopup}
-      {createCardId !== "" ? <CreateCard createCard={createCard} /> : <></>}
-      {user === "" ? (
+      {createCardId !== '' ? <CreateCard createCard={createCard} /> : <></>}
+      {user === '' ? (
         <LoginPopup setUserName={getUser} />
       ) : (
         <div className="login-popup__logged-wrapper">
@@ -279,4 +286,10 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state: number) => {
+  return {
+    counter: state,
+  };
+};
+
+export default connect(mapStateToProps, { inc })(App);

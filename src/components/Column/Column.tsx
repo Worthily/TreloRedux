@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import Card from "../Card";
-import AddCardBtn from "../../ui/AddCardBtn";
-import changeImg from "../../assets/img/change.png";
-import ColumnTitleChange from "../../ui/ColumnTitleChange";
-import { cards, columns } from "../../types";
+import React, { useState } from 'react';
+import Card from '../Card';
+import AddCardBtn from '../../ui/AddCardBtn';
+import changeImg from '../../assets/img/change.png';
+import ColumnTitleChange from '../../ui/ColumnTitleChange';
+import { cards, columns } from '../../types';
 
 function Column(props: {
   column: columns;

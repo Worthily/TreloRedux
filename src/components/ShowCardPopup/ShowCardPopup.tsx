@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import dellImg from "../../assets/img/delete.svg";
-import closeImg from "../../assets/img/close.png";
-import sendBtn from "../../assets/img/send-button.png";
-import changeBtn from "../../assets/img/change-white.png";
-import Comment from "../Comment";
-import CardTitleChange from "../../ui/CardTitleChange";
-import CardTextChange from "../../ui/CardTextChange";
-import { comments, cards } from "../../types";
+import React, { useState } from 'react';
+import dellImg from '../../assets/img/delete.svg';
+import closeImg from '../../assets/img/close.png';
+import sendBtn from '../../assets/img/send-button.png';
+import changeBtn from '../../assets/img/change-white.png';
+import Comment from '../Comment';
+import CardTitleChange from '../../ui/CardTitleChange';
+import CardTextChange from '../../ui/CardTextChange';
+import { comments, cards } from '../../types';
 
 function ShowCardPopup(props: {
   column: string;
@@ -25,12 +25,12 @@ function ShowCardPopup(props: {
   const { id, title, text, author } = props.card;
   const [titleChange, setTitleChange] = useState(false);
   const [textChange, setTextChange] = useState(false);
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState('');
   const [cardTitle, setTitle] = useState(title);
   const [cardText, setText] = useState(text);
 
   function addListen() {
-    document.addEventListener("keyup", (event) => {
+    document.addEventListener('keyup', (event) => {
       if (event.keyCode === 27) {
         props.addListener();
         props.OnClose();
@@ -39,7 +39,7 @@ function ShowCardPopup(props: {
   }
 
   function onCommentValueChange(e: React.FormEvent<HTMLInputElement>): void {
-    if (e.currentTarget.value !== "") {
+    if (e.currentTarget.value !== '') {
       setCommentText(e.currentTarget.value);
     }
   }
@@ -49,7 +49,7 @@ function ShowCardPopup(props: {
     if (commentText.trim()) {
       props.onCommentAdd(id, commentText);
     }
-    setCommentText("");
+    setCommentText('');
   }
 
   if (!props.listener) {
@@ -65,8 +65,7 @@ function ShowCardPopup(props: {
           onClick={() => {
             setTitleChange(true);
           }}
-          className="show-card__header-chenge-btn"
-        >
+          className="show-card__header-chenge-btn">
           <img
             src={changeBtn}
             alt="changeBtn"
@@ -102,8 +101,7 @@ function ShowCardPopup(props: {
           onClick={() => {
             setTextChange(true);
           }}
-          className="show-card__text-chenge-btn"
-        >
+          className="show-card__text-chenge-btn">
           <img
             src={changeBtn}
             alt="changeBtn"
@@ -144,7 +142,7 @@ function ShowCardPopup(props: {
           </li>
         );
       }
-    }
+    },
   );
 
   return (
@@ -154,8 +152,7 @@ function ShowCardPopup(props: {
           {headerTop}
           <div
             onClick={() => props.OnDelete(id)}
-            className="show-card__dell-btn"
-          >
+            className="show-card__dell-btn">
             <img src={dellImg} alt="dell" className="show-card__dell-btn-img" />
           </div>
           <div onClick={() => props.OnClose()} className="show-card__close-btn">

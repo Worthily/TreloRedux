@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import dellImg from "../../assets/img/delete.svg";
-import changeBtn from "../../assets/img/change-white.png";
-import CommentChange from "../../ui/CommentChange";
-import { comments } from "../../types";
+import React, { useState } from 'react';
+import dellImg from '../../assets/img/delete.svg';
+import changeBtn from '../../assets/img/change-white.png';
+import CommentChange from '../../ui/CommentChange';
+import { comments } from '../../types';
 
 function Comment(props: {
   comment: comments;
@@ -40,8 +40,7 @@ function Comment(props: {
               idArr.push(comment.id);
               onDelete(idArr);
             }}
-            className="comment__dell-btn"
-          >
+            className="comment__dell-btn">
             <img src={dellImg} alt="delete" className="comment__dell-btn-img" />
           </div>
         </div>
