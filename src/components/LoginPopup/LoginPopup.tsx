@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { getUser } from '../../store/actions';
+import { user } from '../../types';
 
-function LoginPopup(props: { setUserName(user: string): void }) {
+function LoginPopup(props: {
+  getUser(user: string): { type: string; value: string };
+}) {
   const [user, setUser] = useState('');
 
   function onValueChange(e: React.FormEvent<HTMLInputElement>): void {
@@ -10,7 +15,8 @@ function LoginPopup(props: { setUserName(user: string): void }) {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (user !== '') {
-      props.setUserName(user);
+      props.getUser(user);
+      // props.setUserName(user);
       setUser('');
     }
   }
@@ -32,4 +38,9 @@ function LoginPopup(props: { setUserName(user: string): void }) {
     </div>
   );
 }
-export default LoginPopup;
+
+const mapStateToProps = (state: { userState: user }) => {
+  return {};
+};
+
+export default connect(mapStateToProps, { getUser })(LoginPopup);

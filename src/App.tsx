@@ -4,16 +4,16 @@ import LoginPopup from './components/LoginPopup';
 import CreateCard from './components/CreateCard';
 import ShowCardPopup from './components/ShowCardPopup';
 import StorageServise from './store/StorageServise';
-import { cards, comments, user } from './types';
+import { cards, comments, user, columns } from './types';
 import { connect } from 'react-redux';
-import { inc } from './store/actions';
+// import { getUser } from './store/actions';
+// props: {
+// counter: number;
+// getUser(value: string): { type: string; value: string };
 
-function App(props: {
-  counter: number;
-  inc(value: number): { type: string; value: number };
-}) {
+function App(props: { user: user }) {
   const appStorage = new StorageServise();
-  const [user, setUser] = useState(appStorage.getUser());
+  // const [user, setUser] = useState(appStorage.getUser());
   const [cards, setCards] = useState(appStorage.getCards());
   const [comments, setComments] = useState(appStorage.getComments());
   const [columns, setColumns] = useState(appStorage.getColumns());
@@ -51,13 +51,13 @@ function App(props: {
     onDeleteComments(commentsId);
   }
 
-  function getUser(userName: user): void {
-    if (userName !== user) {
-      appStorage.setUser(userName);
-      setUser(userName);
-    }
-  }
-
+  // function getUser(userName: user): void {
+  //   if (userName !== user) {
+  //     appStorage.setUser(userName);
+  //     setUser(userName);
+  //   }
+  // }
+  // досюдова
   function changeColumnTitle(id: string, newTitle: string): void {
     if (newTitle.trim()) {
       const newArr = columns.map((item) => {
@@ -98,7 +98,7 @@ function App(props: {
         title: cardTitle,
         text: cardText,
         checked: false,
-        author: user,
+        author: 'asd', // todo
         columnId: createCardId,
       };
 
@@ -191,7 +191,7 @@ function App(props: {
       const comment = {
         id: `c${commentId}`,
         card: id,
-        author: user,
+        author: 'asd', //todo
         text: text,
       };
 
@@ -231,7 +231,7 @@ function App(props: {
           <ShowCardPopup
             card={card}
             column={column.title}
-            OnDelete={onCardDelete}
+            OnCardDelete={onCardDelete}
             OnClose={onCloseCardPopup}
             listener={listenerESC}
             addListener={addListener}
@@ -272,12 +272,12 @@ function App(props: {
       {todotext}
       {showCardPopup}
       {createCardId !== '' ? <CreateCard createCard={createCard} /> : <></>}
-      {user === '' ? (
-        <LoginPopup setUserName={getUser} />
+      {props.user === '' ? (
+        <LoginPopup />
       ) : (
         <div className="login-popup__logged-wrapper">
           <span className="login-popup__logged-str">
-            Приветствуем в Trello, {user}
+            Приветствуем в Trello, {props.user}
           </span>
         </div>
       )}
@@ -286,10 +286,15 @@ function App(props: {
   );
 }
 
-const mapStateToProps = (state: number) => {
+const mapStateToProps = (state: {
+  card: cards;
+  column: columns;
+  comment: comments;
+  userState: user;
+}) => {
   return {
-    counter: state,
+    user: state.userState,
   };
 };
 
-export default connect(mapStateToProps, { inc })(App);
+export default connect(mapStateToProps)(App);

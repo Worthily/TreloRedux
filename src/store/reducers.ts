@@ -1,52 +1,110 @@
 import { combineReducers } from 'redux';
 import StorageServise from './StorageServise';
-import {
-  ADD_TODO,
-  TOGGLE_TODO,
-  SET_VISIBILITY_FILTER,
-  VisibilityFilters,
-} from './actions';
+import { cards, comments, user, columns } from '../types';
+import { SET_USER } from './actions';
 
 const appStorage = new StorageServise();
 
-function cards(state = appStorage.getCards(), action: any) {
+// Вспомогательные функции, меняющие значения state
+
+function getUser(user: user, userName: user): string {
+  if (userName !== user) {
+    appStorage.setUser(userName);
+    return userName;
+  }
+  return user;
+}
+
+// function onCradChecked(id: string): void {
+//   const newArr = cards.map((item) => {
+//     if (item.id === id) {
+//       return { ...item, checked: !item.checked };
+//     }
+//     return item;
+//   });
+//   appStorage.setCards(newArr);
+//   setCards(newArr);
+// }
+
+// function onCardDelete(id: string): void {
+//   let newArr: cards[] = cards.filter((elem) => {
+//     return elem.id !== id;
+//   });
+
+//   appStorage.setCards(newArr);
+//   setCards(newArr);
+//   setShowCardId('');
+
+//   const commentsId: string[] = [];
+//   for (const item of comments) {
+//     if (item.card === id) {
+//       commentsId.push(item.id);
+//     }
+//   }
+
+//   onDeleteComments(commentsId);
+// }
+
+// Reducers
+
+function UserInterfaceState(
+  state = { createCardId: '', showCardId: '', listenerESC: false },
+  action: { type: string; value: any },
+) {
   switch (action.type) {
-    case ADD_TODO:
-      return state;
     default:
       return state;
   }
 }
-function columns(state = appStorage.getColumns(), action: any) {
+
+function card(
+  state: cards[] = appStorage.getCards(),
+  action: { type: string; value: any },
+) {
   switch (action.type) {
-    case ADD_TODO:
-      return state;
     default:
       return state;
   }
 }
-function comments(state = appStorage.getComments(), action: any) {
+
+function column(
+  state: columns[] = appStorage.getColumns(),
+  action: { type: string; value: any },
+) {
   switch (action.type) {
-    case ADD_TODO:
-      return state;
     default:
       return state;
   }
 }
-function user(state = appStorage.getUser(), action: any) {
+
+function comment(
+  state: comments[] = appStorage.getComments(),
+  action: { type: string; value: any },
+) {
   switch (action.type) {
-    case ADD_TODO:
+    default:
       return state;
+  }
+}
+
+function userState(
+  state: user = appStorage.getUser(),
+  action: { type: string; value: any },
+) {
+  switch (action.type) {
+    case SET_USER:
+      return (state = getUser(state, action.value));
     default:
       return state;
   }
 }
 
 const App = combineReducers({
-  cards,
-  columns,
-  comments,
-  user,
+  card,
+  column,
+  comment,
+  userState,
+  UserInterfaceState,
 });
 
 export default App;

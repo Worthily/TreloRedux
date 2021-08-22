@@ -6,14 +6,16 @@ import changeBtn from '../../assets/img/change-white.png';
 import Comment from '../Comment';
 import CardTitleChange from '../../ui/CardTitleChange';
 import CardTextChange from '../../ui/CardTextChange';
-import { comments, cards } from '../../types';
+import { connect } from 'react-redux';
+import { getUser } from '../../store/actions';
+import { cards, comments, user, columns } from '../../types';
 
 function ShowCardPopup(props: {
   column: string;
   card: cards;
   cardComments: comments[];
   listener: boolean;
-  OnDelete(id: string): void;
+  OnCardDelete(id: string): void;
   OnClose(): void;
   addListener(): void;
   onTitleChange(id: string, title: string): void;
@@ -151,7 +153,7 @@ function ShowCardPopup(props: {
         <div className="show-card__top">
           {headerTop}
           <div
-            onClick={() => props.OnDelete(id)}
+            onClick={() => props.OnCardDelete(id)}
             className="show-card__dell-btn">
             <img src={dellImg} alt="dell" className="show-card__dell-btn-img" />
           </div>
@@ -189,4 +191,8 @@ function ShowCardPopup(props: {
   );
 }
 
-export default ShowCardPopup;
+const mapStateToProps = (state: { userState: user }) => {
+  return {};
+};
+
+export default connect()(ShowCardPopup);
