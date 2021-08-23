@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { getUser } from '../../store/actions';
+import { setUser } from '../../store/actions';
 import { user } from '../../types';
 
 function LoginPopup(props: {
-  getUser(user: string): { type: string; value: string };
+  user: user;
+  setUser(user: string): { type: string; value: string };
 }) {
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState(props.user);
 
   function onValueChange(e: React.FormEvent<HTMLInputElement>): void {
     setUser(e.currentTarget.value);
   }
 
-  function onSubmit(e: React.FormEvent) {
+  function onSubmit(e: React.FormEvent): void {
     e.preventDefault();
     if (user !== '') {
-      props.getUser(user);
-      // props.setUserName(user);
+      props.setUser(user);
       setUser('');
     }
   }
@@ -39,8 +39,8 @@ function LoginPopup(props: {
   );
 }
 
-const mapStateToProps = (state: { userState: user }) => {
-  return {};
+const mapStateToProps = (state: { user: user }) => {
+  return { user: state.user };
 };
 
-export default connect(mapStateToProps, { getUser })(LoginPopup);
+export default connect(mapStateToProps, { setUser })(LoginPopup);

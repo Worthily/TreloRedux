@@ -290,10 +290,10 @@ const mapStateToProps = (state: {
   card: cards;
   column: columns;
   comment: comments;
-  userState: user;
+  user: user;
 }) => {
   return {
-    user: state.userState,
+    user: state.user,
   };
 };
 

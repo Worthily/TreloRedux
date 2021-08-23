@@ -7,7 +7,7 @@ import Comment from '../Comment';
 import CardTitleChange from '../../ui/CardTitleChange';
 import CardTextChange from '../../ui/CardTextChange';
 import { connect } from 'react-redux';
-import { getUser } from '../../store/actions';
+// import { getUser } from '../../store/actions';
 import { cards, comments, user, columns } from '../../types';
 
 function ShowCardPopup(props: {
