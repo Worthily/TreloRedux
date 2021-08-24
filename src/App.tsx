@@ -1,19 +1,16 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Column from './components/Column';
 import LoginPopup from './components/LoginPopup';
 import CreateCard from './components/CreateCard';
 import ShowCardPopup from './components/ShowCardPopup';
 import StorageServise from './store/StorageServise';
-import { cards, comments, user, columns } from './types';
-import { connect } from 'react-redux';
-// import { getUser } from './store/actions';
-// props: {
-// counter: number;
-// getUser(value: string): { type: string; value: string };
+import { cards, comments, user, columns, state } from './types';
 
-function App(props: { user: user }) {
+function App() {
   const appStorage = new StorageServise();
-  // const [user, setUser] = useState(appStorage.getUser());
+  const dispatch = useDispatch();
+  const user = useSelector((state: state) => state.user);
   const [cards, setCards] = useState(appStorage.getCards());
   const [comments, setComments] = useState(appStorage.getComments());
   const [columns, setColumns] = useState(appStorage.getColumns());
@@ -21,16 +18,16 @@ function App(props: { user: user }) {
   const [showCardId, setShowCardId] = useState('');
   const [listenerESC, setListenerESC] = useState(false);
 
-  function onCradChecked(id: string): void {
-    const newArr = cards.map((item) => {
-      if (item.id === id) {
-        return { ...item, checked: !item.checked };
-      }
-      return item;
-    });
-    appStorage.setCards(newArr);
-    setCards(newArr);
-  }
+  // function onCradChecked(id: string): void {
+  //   const newArr = cards.map((item) => {
+  //     if (item.id === id) {
+  //       return { ...item, checked: !item.checked };
+  //     }
+  //     return item;
+  //   });
+  //   appStorage.setCards(newArr);
+  //   setCards(newArr);
+  // }
 
   function onCardDelete(id: string): void {
     let newArr: cards[] = cards.filter((elem) => {
@@ -54,7 +51,6 @@ function App(props: { user: user }) {
   // function getUser(userName: user): void {
   //   if (userName !== user) {
   //     appStorage.setUser(userName);
-  //     setUser(userName);
   //   }
   // }
   // досюдова
@@ -255,8 +251,6 @@ function App(props: { user: user }) {
         <Column
           column={item}
           cards={cards}
-          onCardDelete={onCardDelete}
-          onCardChecked={onCradChecked}
           changeColumnTitle={changeColumnTitle}
           createCard={showCreateCardPopup}
           onShowPopup={onShowCardPopup}
@@ -272,12 +266,12 @@ function App(props: { user: user }) {
       {todotext}
       {showCardPopup}
       {createCardId !== '' ? <CreateCard createCard={createCard} /> : <></>}
-      {props.user === '' ? (
+      {user === '' ? (
         <LoginPopup />
       ) : (
         <div className="login-popup__logged-wrapper">
           <span className="login-popup__logged-str">
-            Приветствуем в Trello, {props.user}
+            Приветствуем в Trello, {user}
           </span>
         </div>
       )}
@@ -286,15 +280,4 @@ function App(props: { user: user }) {
   );
 }
 
-const mapStateToProps = (state: {
-  card: cards;
-  column: columns;
-  comment: comments;
-  user: user;
-}) => {
-  return {
-    user: state.user,
-  };
-};
-
-export default connect(mapStateToProps)(App);
+export default App;

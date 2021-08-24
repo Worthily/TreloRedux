@@ -5,16 +5,19 @@ import checkImg from '../../assets/img/viewgreen.png';
 import dellImg from '../../assets/img/delete.svg';
 import CommentsCount from '../CommentsCount';
 import { cards } from '../../types';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  onCardCheckedActionCreator,
+  onCardDeleteActionCreator,
+} from '../../store';
 
 function Card(props: {
   card: cards;
-  onCardDelete(): void;
-  onCardChecked(): void;
   onShowPopup(): void;
   commentsCount(): number;
 }) {
-  const { card, onCardDelete, onCardChecked, onShowPopup, commentsCount } =
-    props;
+  const dispatch = useDispatch();
+  const { card, onShowPopup, commentsCount } = props;
 
   const btnImgSrc = card.checked ? checkImg : notCheckImg;
 
@@ -28,14 +31,22 @@ function Card(props: {
         </div>
       </div>
       <div className="card__buttons-wrapper">
-        <div onClick={onCardChecked} className="card__checked-btn card__btn">
+        <div
+          onClick={() => {
+            dispatch(onCardCheckedActionCreator({ cardId: card.id }));
+          }}
+          className="card__checked-btn card__btn">
           <img src={btnImgSrc} alt="checked" className="card__checked-img" />
         </div>
         <div className="card__comments-btn card__btn">
           {<CommentsCount count={commentsCount} />}
           <img src={commentImg} alt="comment" className="card__comment-img" />
         </div>
-        <div onClick={onCardDelete} className="card__dell-btn card__btn">
+        <div
+          onClick={() => {
+            dispatch(onCardDeleteActionCreator({ cardId: card.id }));
+          }}
+          className="card__dell-btn card__btn">
           <img src={dellImg} alt="delete" className="card__dell-img" />
         </div>
       </div>

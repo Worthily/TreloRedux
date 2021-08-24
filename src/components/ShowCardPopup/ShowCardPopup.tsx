@@ -6,8 +6,6 @@ import changeBtn from '../../assets/img/change-white.png';
 import Comment from '../Comment';
 import CardTitleChange from '../../ui/CardTitleChange';
 import CardTextChange from '../../ui/CardTextChange';
-import { connect } from 'react-redux';
-// import { getUser } from '../../store/actions';
 import { cards, comments, user, columns } from '../../types';
 
 function ShowCardPopup(props: {
@@ -191,8 +189,4 @@ function ShowCardPopup(props: {
   );
 }
 
-const mapStateToProps = (state: { userState: user }) => {
-  return {};
-};
-
-export default connect()(ShowCardPopup);
+export default ShowCardPopup;

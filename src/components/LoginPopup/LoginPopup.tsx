@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import { setUser } from '../../store/actions';
-import { user } from '../../types';
+import { useSelector, useDispatch } from 'react-redux';
+import { cards, comments, user, columns, state } from '../../types';
+import { setUserActionCreator } from '../../store';
+// import { user } from '../../types';
 
-function LoginPopup(props: {
-  user: user;
-  setUser(user: string): { type: string; value: string };
-}) {
-  const [user, setUser] = useState(props.user);
+function LoginPopup() {
+  const dispatch = useDispatch();
+  const [user, setUser] = useState('');
 
   function onValueChange(e: React.FormEvent<HTMLInputElement>): void {
     setUser(e.currentTarget.value);
   }
 
-  function onSubmit(e: React.FormEvent): void {
+  const onSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
     if (user !== '') {
-      props.setUser(user);
+      dispatch(setUserActionCreator({ userName: user }));
       setUser('');
     }
-  }
+  };
 
   return (
     <div className="login-popup">
@@ -39,8 +38,4 @@ function LoginPopup(props: {
   );
 }
 
-const mapStateToProps = (state: { user: user }) => {
-  return { user: state.user };
-};
-
-export default connect(mapStateToProps, { setUser })(LoginPopup);
+export default LoginPopup;

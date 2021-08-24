@@ -3,27 +3,20 @@ import Card from '../Card';
 import AddCardBtn from '../../ui/AddCardBtn';
 import changeImg from '../../assets/img/change.png';
 import ColumnTitleChange from '../../ui/ColumnTitleChange';
-import { cards, columns } from '../../types';
+import { cards, columns, state } from '../../types';
+import { useSelector, useDispatch } from 'react-redux';
 
 function Column(props: {
   column: columns;
   cards: cards[];
-  onCardDelete(id: string): void;
-  onCardChecked(id: string): void;
   changeColumnTitle(id: string, title: string): void;
   createCard(id: string): void;
   onShowPopup(id: string): void;
   commentsCount(id: string): number;
 }) {
   const { id, title } = props.column;
-  const {
-    cards,
-    onCardDelete,
-    onCardChecked,
-    createCard,
-    onShowPopup,
-    commentsCount,
-  } = props;
+  const cards = useSelector((state: state) => state.cards);
+  const { createCard, onShowPopup, commentsCount } = props;
   const [columnTitle, setTitle] = useState(title);
   const [change, setChange] = useState(false);
 
@@ -63,8 +56,6 @@ function Column(props: {
         <li key={item.id} className="column__card-item">
           <Card
             card={item}
-            onCardDelete={() => onCardDelete(item.id)}
-            onCardChecked={() => onCardChecked(item.id)}
             onShowPopup={() => onShowPopup(item.id)}
             commentsCount={() => commentsCount(item.id)}
           />
