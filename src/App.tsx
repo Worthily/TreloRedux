@@ -29,6 +29,13 @@ function App() {
   //   setCards(newArr);
   // }
 
+  // function getUser(userName: user): void {
+  //   if (userName !== user) {
+  //     appStorage.setUser(userName);
+  //   }
+  // }
+
+  // все
   function onCardDelete(id: string): void {
     let newArr: cards[] = cards.filter((elem) => {
       return elem.id !== id;
@@ -47,13 +54,7 @@ function App() {
 
     onDeleteComments(commentsId);
   }
-
-  // function getUser(userName: user): void {
-  //   if (userName !== user) {
-  //     appStorage.setUser(userName);
-  //   }
-  // }
-  // досюдова
+  // все
   function changeColumnTitle(id: string, newTitle: string): void {
     if (newTitle.trim()) {
       const newArr = columns.map((item) => {
@@ -70,7 +71,7 @@ function App() {
   function showCreateCardPopup(id: string): void {
     setCreateCardId(id);
   }
-
+  // все
   function createCard(cardTitle: string, cardText: string) {
     if (cardTitle.trim() && cardText.trim()) {
       let id = 0;
@@ -118,7 +119,7 @@ function App() {
   function addListener(): void {
     setListenerESC(true);
   }
-
+  // все
   function changeCardTitle(id: string, title: string) {
     if (title.trim()) {
       const newArr = cards.map((item) => {
@@ -131,7 +132,7 @@ function App() {
       setCards(newArr);
     }
   }
-
+  // все
   function changeCardText(id: string, text: string) {
     if (text.trim()) {
       const newArr = cards.map((item) => {
@@ -144,7 +145,7 @@ function App() {
       setCards(newArr);
     }
   }
-
+  // все
   const onDeleteComments = (ids: string[]) => {
     const filteredComments = comments.filter((comment) => {
       return !ids.includes(comment.id);
@@ -152,7 +153,7 @@ function App() {
     appStorage.setComments(filteredComments);
     setComments(filteredComments);
   };
-
+  // все
   function onChangeComments(id: string, text: string) {
     if (text.trim()) {
       const newArr = comments.map((item) => {
@@ -165,7 +166,7 @@ function App() {
       setComments(newArr);
     }
   }
-
+  // все
   function onCommentAdd(id: string, text: string) {
     if (text.trim()) {
       let commentId = 0;
@@ -206,6 +207,8 @@ function App() {
     }
     return count;
   }
+
+  // end
 
   let showCardPopup: JSX.Element = <></>;
   if (showCardId !== '') {
@@ -259,11 +262,9 @@ function App() {
       </li>
     );
   });
-  let todotext: string = '';
 
   return (
     <header className="app">
-      {todotext}
       {showCardPopup}
       {createCardId !== '' ? <CreateCard createCard={createCard} /> : <></>}
       {user === '' ? (

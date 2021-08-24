@@ -9,10 +9,86 @@ const columnsInitialState: columns[] = appStorage.getColumns();
 const commentsInitialState: comments[] = appStorage.getComments();
 const userInitialState: user = appStorage.getUser();
 
+const userSlice = createSlice({
+  name: 'user',
+  initialState: userInitialState,
+  reducers: {
+    setUser: (state, { payload }: PayloadAction<{ userName: user }>) => {
+      if (payload.userName !== state) {
+        appStorage.setUser(payload.userName);
+        return payload.userName;
+      }
+    },
+  },
+});
+
+const columnsSlice = createSlice({
+  name: 'columns',
+  initialState: columnsInitialState,
+  reducers: {
+    changeTitle: (
+      state,
+      { payload }: PayloadAction<{ columnId: string; newTitle: string }>,
+    ) => {
+      if (payload.newTitle.trim()) {
+        const newArr = state.map((column) => {
+          if (column.id === payload.columnId) {
+            return { ...column, title: payload.newTitle };
+          }
+          return column;
+        });
+        appStorage.setColumns(newArr);
+        return newArr;
+      }
+    },
+  },
+});
+
 const cardsSlice = createSlice({
   name: 'cards',
   initialState: cardsInitialState,
   reducers: {
+    create: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        title: string;
+        text: string;
+        column: string;
+        author: string;
+      }>,
+    ) => {
+      if (payload.title.trim() && payload.text.trim()) {
+        let id = 0;
+        let success = false;
+        const cardsId: string[] = [];
+
+        for (let i = 0; i < state.length; i++) {
+          cardsId.push(state[i].id);
+        }
+
+        while (!success) {
+          if (cardsId.indexOf(`w${id}`) !== -1) {
+            id++;
+          } else {
+            success = true;
+          }
+        }
+
+        const card = {
+          id: `w${id}`,
+          title: payload.title,
+          text: payload.text,
+          checked: false,
+          author: payload.author,
+          columnId: payload.column,
+        };
+
+        const newCards = [...state, card];
+        appStorage.setCards(newCards);
+      }
+    },
     onCardChecked: (state, { payload }: PayloadAction<{ cardId: string }>) => {
       const newArr = state.map((item) => {
         if (item.id === payload.cardId) {
@@ -30,19 +106,86 @@ const cardsSlice = createSlice({
       appStorage.setCards(newArr);
       return newArr;
     },
+    changeTitle: (
+      state,
+      { payload }: PayloadAction<{ cardId: string; title: string }>,
+    ) => {
+      if (payload.title.trim()) {
+        const newArr = state.map((card) => {
+          if (card.id === payload.cardId) {
+            return { ...card, title: payload.title };
+          }
+          return card;
+        });
+        appStorage.setCards(newArr);
+        return newArr;
+      }
+    },
+    changeText: (
+      state,
+      { payload }: PayloadAction<{ cardId: string; text: string }>,
+    ) => {
+      if (payload.text.trim()) {
+        const newArr = state.map((card) => {
+          if (card.id === payload.cardId) {
+            return { ...card, title: payload.text };
+          }
+          return card;
+        });
+        appStorage.setCards(newArr);
+        return newArr;
+      }
+    },
   },
-});
-
-const columnsSlice = createSlice({
-  name: 'columns',
-  initialState: columnsInitialState,
-  reducers: {},
 });
 
 const commentsSlice = createSlice({
   name: 'comments',
   initialState: commentsInitialState,
-  reducers: {},
+  reducers: {
+    create: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ cardId: string; author: string; text: string }>,
+    ) => {
+      if (payload.text.trim()) {
+        let commentId = 0;
+        let success = false;
+        const commentsId: string[] = [];
+
+        for (let comment of state) {
+          commentsId.push(comment.id);
+        }
+
+        while (!success) {
+          if (commentsId.indexOf(`c${commentId}`) !== -1) {
+            commentId++;
+          } else {
+            success = true;
+          }
+        }
+
+        const comment = {
+          id: `c${commentId}`,
+          card: payload.cardId,
+          author: payload.author, //todo
+          text: payload.text,
+        };
+
+        const newArr = [...state, comment];
+        appStorage.setComments(newArr);
+        return newArr;
+      }
+    },
+    onDelete: (state, { payload }: PayloadAction<{ ids: string[] }>) => {
+      const filteredComments = state.filter((comment) => {
+        return !payload.ids.includes(comment.id);
+      });
+      appStorage.setComments(filteredComments);
+      return filteredComments;
+    },
+  },
   extraReducers: {
     [cardsSlice.actions.onCardDelete.type]: (
       state,
@@ -52,19 +195,6 @@ const commentsSlice = createSlice({
         return payload.cardId !== comment.card;
       });
       appStorage.setComments(filteredComments);
-    },
-  },
-});
-
-const userSlice = createSlice({
-  name: 'user',
-  initialState: userInitialState,
-  reducers: {
-    setUser: (state, { payload }: PayloadAction<{ userName: user }>) => {
-      if (payload.userName !== state) {
-        appStorage.setUser(payload.userName);
-        return payload.userName;
-      }
     },
   },
 });
