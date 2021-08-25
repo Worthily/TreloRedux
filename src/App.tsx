@@ -1,205 +1,18 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Column from './components/Column';
 import LoginPopup from './components/LoginPopup';
 import CreateCard from './components/CreateCard';
 import ShowCardPopup from './components/ShowCardPopup';
-import StorageServise from './store/StorageServise';
-import { cards, comments, user } from './types';
-import { connect } from 'react-redux';
-import { inc } from './store/actions';
+import { comments, state } from './types';
 
-function App(props: {
-  counter: number;
-  inc(value: number): { type: string; value: number };
-}) {
-  const appStorage = new StorageServise();
-  const [user, setUser] = useState(appStorage.getUser());
-  const [cards, setCards] = useState(appStorage.getCards());
-  const [comments, setComments] = useState(appStorage.getComments());
-  const [columns, setColumns] = useState(appStorage.getColumns());
-  const [createCardId, setCreateCardId] = useState('');
-  const [showCardId, setShowCardId] = useState('');
-  const [listenerESC, setListenerESC] = useState(false);
-
-  function onCradChecked(id: string): void {
-    const newArr = cards.map((item) => {
-      if (item.id === id) {
-        return { ...item, checked: !item.checked };
-      }
-      return item;
-    });
-    appStorage.setCards(newArr);
-    setCards(newArr);
-  }
-
-  function onCardDelete(id: string): void {
-    let newArr: cards[] = cards.filter((elem) => {
-      return elem.id !== id;
-    });
-
-    appStorage.setCards(newArr);
-    setCards(newArr);
-    setShowCardId('');
-
-    const commentsId: string[] = [];
-    for (const item of comments) {
-      if (item.card === id) {
-        commentsId.push(item.id);
-      }
-    }
-
-    onDeleteComments(commentsId);
-  }
-
-  function getUser(userName: user): void {
-    if (userName !== user) {
-      appStorage.setUser(userName);
-      setUser(userName);
-    }
-  }
-
-  function changeColumnTitle(id: string, newTitle: string): void {
-    if (newTitle.trim()) {
-      const newArr = columns.map((item) => {
-        if (item.id === id) {
-          return { ...item, title: newTitle };
-        }
-        return item;
-      });
-      appStorage.setColumns(newArr);
-      setColumns(newArr);
-    }
-  }
-
-  function showCreateCardPopup(id: string): void {
-    setCreateCardId(id);
-  }
-
-  function createCard(cardTitle: string, cardText: string) {
-    if (cardTitle.trim() && cardText.trim()) {
-      let id = 0;
-      let success = false;
-      const cardsId: string[] = [];
-
-      for (let i = 0; i < cards.length; i++) {
-        cardsId.push(cards[i].id);
-      }
-
-      while (!success) {
-        if (cardsId.indexOf(`w${id}`) !== -1) {
-          id++;
-        } else {
-          success = true;
-        }
-      }
-
-      const card = {
-        id: `w${id}`,
-        title: cardTitle,
-        text: cardText,
-        checked: false,
-        author: user,
-        columnId: createCardId,
-      };
-
-      const newCards = [...cards, card];
-      appStorage.setCards(newCards);
-      setCards(newCards);
-      setCreateCardId('');
-    } else {
-      setCreateCardId('');
-    }
-  }
-
-  function onShowCardPopup(id: string): void {
-    setShowCardId(id);
-  }
-
-  function onCloseCardPopup(): void {
-    setShowCardId('');
-  }
-
-  function addListener(): void {
-    setListenerESC(true);
-  }
-
-  function changeCardTitle(id: string, title: string) {
-    if (title.trim()) {
-      const newArr = cards.map((item) => {
-        if (item.id === id) {
-          return { ...item, title };
-        }
-        return item;
-      });
-      appStorage.setCards(newArr);
-      setCards(newArr);
-    }
-  }
-
-  function changeCardText(id: string, text: string) {
-    if (text.trim()) {
-      const newArr = cards.map((item) => {
-        if (item.id === id) {
-          return { ...item, text };
-        }
-        return item;
-      });
-      appStorage.setCards(newArr);
-      setCards(newArr);
-    }
-  }
-
-  const onDeleteComments = (ids: string[]) => {
-    const filteredComments = comments.filter((comment) => {
-      return !ids.includes(comment.id);
-    });
-    appStorage.setComments(filteredComments);
-    setComments(filteredComments);
-  };
-
-  function onChangeComments(id: string, text: string) {
-    if (text.trim()) {
-      const newArr = comments.map((item) => {
-        if (item.id === id) {
-          return { ...item, text };
-        }
-        return item;
-      });
-      appStorage.setComments(newArr);
-      setComments(newArr);
-    }
-  }
-
-  function onCommentAdd(id: string, text: string) {
-    if (text.trim()) {
-      let commentId = 0;
-      let success = false;
-      const commentsId: string[] = [];
-
-      for (let item of comments) {
-        commentsId.push(item.id);
-      }
-
-      while (!success) {
-        if (commentsId.indexOf(`c${commentId}`) !== -1) {
-          commentId++;
-        } else {
-          success = true;
-        }
-      }
-
-      const comment = {
-        id: `c${commentId}`,
-        card: id,
-        author: user,
-        text: text,
-      };
-
-      const newArr = [...comments, comment];
-      appStorage.setComments(newArr);
-      setComments(newArr);
-    }
-  }
+function App() {
+  const user = useSelector((state: state) => state.user);
+  const cards = useSelector((state: state) => state.cards);
+  const comments = useSelector((state: state) => state.comments);
+  const columns = useSelector((state: state) => state.columns);
+  const createCardId = useSelector((state: state) => state.createCardColumnId);
+  const showCardId = useSelector((state: state) => state.showCard);
 
   function commentsCount(id: string) {
     let count = 0;
@@ -231,16 +44,7 @@ function App(props: {
           <ShowCardPopup
             card={card}
             column={column.title}
-            OnDelete={onCardDelete}
-            OnClose={onCloseCardPopup}
-            listener={listenerESC}
-            addListener={addListener}
-            onTitleChange={changeCardTitle}
-            onTextChange={changeCardText}
             cardComments={cardComments}
-            onDeleteComments={onDeleteComments}
-            onChangeComments={onChangeComments}
-            onCommentAdd={onCommentAdd}
           />
         );
       }
@@ -252,28 +56,17 @@ function App(props: {
   const columnItems = columns.map((item) => {
     return (
       <li key={item.id} className="app__column-item">
-        <Column
-          column={item}
-          cards={cards}
-          onCardDelete={onCardDelete}
-          onCardChecked={onCradChecked}
-          changeColumnTitle={changeColumnTitle}
-          createCard={showCreateCardPopup}
-          onShowPopup={onShowCardPopup}
-          commentsCount={commentsCount}
-        />
+        <Column column={item} commentsCount={commentsCount} />
       </li>
     );
   });
-  let todotext: string = '';
 
   return (
     <header className="app">
-      {todotext}
       {showCardPopup}
-      {createCardId !== '' ? <CreateCard createCard={createCard} /> : <></>}
+      {createCardId !== '' ? <CreateCard /> : <></>}
       {user === '' ? (
-        <LoginPopup setUserName={getUser} />
+        <LoginPopup />
       ) : (
         <div className="login-popup__logged-wrapper">
           <span className="login-popup__logged-str">
@@ -286,10 +79,4 @@ function App(props: {
   );
 }
 
-const mapStateToProps = (state: number) => {
-  return {
-    counter: state,
-  };
-};
-
-export default connect(mapStateToProps, { inc })(App);
+export default App;

@@ -20,3 +20,13 @@ export type comments = {
 };
 
 export type user = string;
+
+export type state = {
+  user: user;
+  comments: comments[];
+  cards: cards[];
+  columns: columns[];
+  escListener: boolean;
+  showCard: string;
+  createCardColumnId: string;
+};

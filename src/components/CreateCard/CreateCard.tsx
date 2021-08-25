@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
+import { cards, comments, user, columns, state } from '../../types';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  createCardActionCreator,
+  clearNewCreateCardIdActionCreator,
+} from '../../store';
 
-function CreateCard(props: { createCard(title: string, text: string): void }) {
+function CreateCard() {
+  const dispatch = useDispatch();
+  const user = useSelector((state: state) => state.user);
+  const columnId = useSelector((state: state) => state.createCardColumnId);
+
   const [title, setTitle] = useState('');
   const [text, setText] = useState('');
 
@@ -14,12 +24,18 @@ function CreateCard(props: { createCard(title: string, text: string): void }) {
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (title !== '' && text !== '') {
-      props.createCard(title, text);
+    if (title.trim() && text.trim()) {
+      dispatch(
+        createCardActionCreator({
+          title: title,
+          text: text,
+          author: user,
+          column: columnId,
+        }),
+      );
+      dispatch(clearNewCreateCardIdActionCreator());
       setTitle('');
       setText('');
-    } else {
-      props.createCard(title, text);
     }
   }
 

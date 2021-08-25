@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { cards, comments, user, columns, state } from '../../types';
+import { setUserActionCreator } from '../../store';
 
-function LoginPopup(props: { setUserName(user: string): void }) {
+function LoginPopup() {
+  const dispatch = useDispatch();
   const [user, setUser] = useState('');
 
   function onValueChange(e: React.FormEvent<HTMLInputElement>): void {
     setUser(e.currentTarget.value);
   }
 
-  function onSubmit(e: React.FormEvent) {
+  const onSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
     if (user !== '') {
-      props.setUserName(user);
+      dispatch(setUserActionCreator({ userName: user }));
       setUser('');
     }
-  }
+  };
 
   return (
     <div className="login-popup">
@@ -32,4 +36,5 @@ function LoginPopup(props: { setUserName(user: string): void }) {
     </div>
   );
 }
+
 export default LoginPopup;
