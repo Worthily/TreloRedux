@@ -5,25 +5,24 @@ import checkImg from '../../assets/img/viewgreen.png';
 import dellImg from '../../assets/img/delete.svg';
 import CommentsCount from '../CommentsCount';
 import { cards } from '../../types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   onCardCheckedActionCreator,
   onCardDeleteActionCreator,
+  setNewCardIdActionCreator,
 } from '../../store';
 
-function Card(props: {
-  card: cards;
-  onShowPopup(): void;
-  commentsCount(): number;
-}) {
+function Card(props: { card: cards; commentsCount(): number }) {
   const dispatch = useDispatch();
-  const { card, onShowPopup, commentsCount } = props;
+  const { card, commentsCount } = props;
 
   const btnImgSrc = card.checked ? checkImg : notCheckImg;
 
   return (
     <div className="column__card card">
-      <div onClick={onShowPopup} className="card__info-wrapper">
+      <div
+        onClick={() => dispatch(setNewCardIdActionCreator({ cardId: card.id }))}
+        className="card__info-wrapper">
         <h2 className="card__header">{card.title}</h2>
         <p className="card__autor">{card.author}</p>
         <div className="card__text-wrapper">

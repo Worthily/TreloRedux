@@ -6,22 +6,28 @@ import changeBtn from '../../assets/img/change-white.png';
 import Comment from '../Comment';
 import CardTitleChange from '../../ui/CardTitleChange';
 import CardTextChange from '../../ui/CardTextChange';
-import { cards, comments, user, columns } from '../../types';
+import { cards, comments, user, columns, state } from '../../types';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  createCommentdActionCreator,
+  onCardDeleteActionCreator,
+  changeCardTitleActionCreator,
+  changeCardTextActionCreator,
+  onCommentDeleteActionCreator,
+  changeCommentTextActionCreator,
+  clearShowCardIdActionCreator,
+  setListenerActionCreator,
+} from '../../store';
 
 function ShowCardPopup(props: {
   column: string;
   card: cards;
   cardComments: comments[];
-  listener: boolean;
-  OnCardDelete(id: string): void;
-  OnClose(): void;
-  addListener(): void;
-  onTitleChange(id: string, title: string): void;
-  onTextChange(id: string, text: string): void;
-  onDeleteComments(id: string[]): void;
-  onChangeComments(id: string, text: string): void;
-  onCommentAdd(id: string, text: string): void;
 }) {
+  const dispatch = useDispatch();
+  const user = useSelector((state: state) => state.user);
+  const listener = useSelector((state: state) => state.escListener);
+
   const { id, title, text, author } = props.card;
   const [titleChange, setTitleChange] = useState(false);
   const [textChange, setTextChange] = useState(false);
@@ -32,8 +38,8 @@ function ShowCardPopup(props: {
   function addListen() {
     document.addEventListener('keyup', (event) => {
       if (event.keyCode === 27) {
-        props.addListener();
-        props.OnClose();
+        dispatch(setListenerActionCreator());
+        dispatch(clearShowCardIdActionCreator());
       }
     });
   }
@@ -47,12 +53,18 @@ function ShowCardPopup(props: {
   function onCommentSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (commentText.trim()) {
-      props.onCommentAdd(id, commentText);
+      dispatch(
+        createCommentdActionCreator({
+          cardId: id,
+          author: user,
+          text: commentText,
+        }),
+      );
     }
     setCommentText('');
   }
 
-  if (!props.listener) {
+  if (!listener) {
     addListen();
   }
 
@@ -84,7 +96,7 @@ function ShowCardPopup(props: {
           setTitle(title);
         }}
         onTitleChange={(title: string) => {
-          props.onTitleChange(id, title);
+          dispatch(changeCardTitleActionCreator({ cardId: id, title: title }));
         }}
         setTitleChange={(status: boolean) => {
           setTitleChange(status);
@@ -119,7 +131,7 @@ function ShowCardPopup(props: {
           setText(text);
         }}
         onTextChange={(text: string) => {
-          props.onTextChange(id, text);
+          dispatch(changeCardTextActionCreator({ cardId: id, text: text }));
         }}
         setTextChange={(status: boolean) => {
           setTextChange(status);
@@ -129,15 +141,20 @@ function ShowCardPopup(props: {
   }
 
   const comments = props.cardComments.map(
-    // eslint-disable-next-line
     (item: { id: string; author: string; text: string; card: string }) => {
       if (item) {
         return (
           <li key={item.id} className="show-card__comment-item">
             <Comment
               comment={item}
-              onDelete={props.onDeleteComments}
-              onChange={props.onChangeComments}
+              onDelete={() => {
+                dispatch(onCommentDeleteActionCreator({ ids: [item.id] }));
+              }}
+              onChange={(commentId: string, text: string) => {
+                dispatch(
+                  changeCommentTextActionCreator({ id: item.id, text: text }),
+                );
+              }}
             />
           </li>
         );
@@ -151,11 +168,13 @@ function ShowCardPopup(props: {
         <div className="show-card__top">
           {headerTop}
           <div
-            onClick={() => props.OnCardDelete(id)}
+            onClick={() => dispatch(onCardDeleteActionCreator({ cardId: id }))}
             className="show-card__dell-btn">
             <img src={dellImg} alt="dell" className="show-card__dell-btn-img" />
           </div>
-          <div onClick={() => props.OnClose()} className="show-card__close-btn">
+          <div
+            onClick={() => dispatch(clearShowCardIdActionCreator())}
+            className="show-card__close-btn">
             <img
               src={closeImg}
               alt="close"

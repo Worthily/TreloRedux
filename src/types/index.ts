@@ -26,4 +26,7 @@ export type state = {
   comments: comments[];
   cards: cards[];
   columns: columns[];
+  escListener: boolean;
+  showCard: string;
+  createCardColumnId: string;
 };

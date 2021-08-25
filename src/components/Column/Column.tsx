@@ -3,20 +3,18 @@ import Card from '../Card';
 import AddCardBtn from '../../ui/AddCardBtn';
 import changeImg from '../../assets/img/change.png';
 import ColumnTitleChange from '../../ui/ColumnTitleChange';
-import { cards, columns, state } from '../../types';
+import { columns, state } from '../../types';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+  changeColumnTitleActionCreator,
+  setNewCreateCardIdActionCreator,
+} from '../../store';
 
-function Column(props: {
-  column: columns;
-  cards: cards[];
-  changeColumnTitle(id: string, title: string): void;
-  createCard(id: string): void;
-  onShowPopup(id: string): void;
-  commentsCount(id: string): number;
-}) {
+function Column(props: { column: columns; commentsCount(id: string): number }) {
+  const dispatch = useDispatch();
   const { id, title } = props.column;
   const cards = useSelector((state: state) => state.cards);
-  const { createCard, onShowPopup, commentsCount } = props;
+  const { commentsCount } = props;
   const [columnTitle, setTitle] = useState(title);
   const [change, setChange] = useState(false);
 
@@ -41,7 +39,9 @@ function Column(props: {
           setTitle(title);
         }}
         getTitle={(title: string) => {
-          props.changeColumnTitle(id, title);
+          dispatch(
+            changeColumnTitleActionCreator({ columnId: id, newTitle: title }),
+          );
         }}
         setChange={(status: boolean) => {
           setChange(status);
@@ -49,16 +49,11 @@ function Column(props: {
       />
     );
   }
-  // eslint-disable-next-line
   const elements = cards.map((item) => {
     if (item && item.columnId === id) {
       return (
         <li key={item.id} className="column__card-item">
-          <Card
-            card={item}
-            onShowPopup={() => onShowPopup(item.id)}
-            commentsCount={() => commentsCount(item.id)}
-          />
+          <Card card={item} commentsCount={() => commentsCount(item.id)} />
         </li>
       );
     }
@@ -68,7 +63,11 @@ function Column(props: {
     <div className="column">
       {heading}
       <ul className="column__card-wrapper">{elements}</ul>
-      <AddCardBtn createCard={() => createCard(id)} />
+      <AddCardBtn
+        createCard={() =>
+          dispatch(setNewCreateCardIdActionCreator({ columnId: id }))
+        }
+      />
     </div>
   );
 }

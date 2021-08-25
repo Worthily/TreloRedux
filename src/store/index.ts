@@ -87,6 +87,7 @@ const cardsSlice = createSlice({
 
         const newCards = [...state, card];
         appStorage.setCards(newCards);
+        return newCards;
       }
     },
     onCardChecked: (state, { payload }: PayloadAction<{ cardId: string }>) => {
@@ -128,7 +129,7 @@ const cardsSlice = createSlice({
       if (payload.text.trim()) {
         const newArr = state.map((card) => {
           if (card.id === payload.cardId) {
-            return { ...card, title: payload.text };
+            return { ...card, text: payload.text };
           }
           return card;
         });
@@ -185,6 +186,20 @@ const commentsSlice = createSlice({
       appStorage.setComments(filteredComments);
       return filteredComments;
     },
+    changeText: (
+      state,
+      { payload }: PayloadAction<{ id: string; text: string }>,
+    ) => {
+      if (payload.text.trim()) {
+        const newArr = state.map((comment) => {
+          if (comment.id === payload.id) {
+            return { ...comment, text: payload.text };
+          }
+          return comment;
+        });
+        appStorage.setComments(newArr);
+      }
+    },
   },
   extraReducers: {
     [cardsSlice.actions.onCardDelete.type]: (
@@ -195,86 +210,84 @@ const commentsSlice = createSlice({
         return payload.cardId !== comment.card;
       });
       appStorage.setComments(filteredComments);
+      return filteredComments;
     },
   },
 });
 
-// const todosSlice = createSlice({
-//   name: 'todos',
-//   initialState: todosInitialState,
-//   reducers: {
-//     create: {
-//       reducer: (
-//         state,
-//         {
-//           payload,
-//         }: PayloadAction<{ id: string; desc: string; isComplete: boolean }>,
-//       ) => {
-//         state.push(payload);
-//       },
-//       prepare: ({ desc }: { desc: string }) => ({
-//         payload: {
-//           id: '1',
-//           desc,
-//           isComplete: false,
-//         },
-//       }),
-//     },
-//     edit: (state, { payload }: PayloadAction<{ id: string; desc: string }>) => {
-//       const index = state.findIndex((todo) => todo.id === payload.id);
-//       if (index !== -1) {
-//         state[index].desc = payload.desc;
-//       }
-//     },
-//     toggle: (
-//       state,
-//       { payload }: PayloadAction<{ id: string; isComplete: boolean }>,
-//     ) => {
-//       const index = state.findIndex((todo) => todo.id === payload.id);
-//       if (index !== -1) {
-//         state[index].isComplete = payload.isComplete;
-//       }
-//     },
-//     remove: (state, { payload }: PayloadAction<{ id: string }>) => {
-//       const index = state.findIndex((todo) => todo.id === payload.id);
-//       if (index !== -1) {
-//         state.splice(index, 1);
-//       }
-//     },
-//   },
-// });
+const showCardSlice = createSlice({
+  name: 'cardToShow',
+  initialState: '',
+  reducers: {
+    setNewCard: (state, { payload }: PayloadAction<{ cardId: string }>) => {
+      return payload.cardId;
+    },
+    clearId: () => {
+      return '';
+    },
+  },
+  extraReducers: {
+    [cardsSlice.actions.onCardDelete.type]: (state) => {
+      return '';
+    },
+  },
+});
 
-// const selectedTodoSlice = createSlice({
-//   name: 'selectedTodo',
-//   initialState: null as string | null,
-//   reducers: {
-//     select: (_state, { payload }: PayloadAction<{ id: string }>) => payload.id,
-//   },
-// });
+const createCardColumnIdSlice = createSlice({
+  name: 'createCardColumnId',
+  initialState: '',
+  reducers: {
+    setNewColumnId: (
+      state,
+      { payload }: PayloadAction<{ columnId: string }>,
+    ) => {
+      return payload.columnId;
+    },
+    clearId: () => {
+      return '';
+    },
+  },
+});
 
-// const counterSlice = createSlice({
-//   name: 'counter',
-//   initialState: 0,
-//   reducers: {},
-//   extraReducers: {
-//     [todosSlice.actions.create.type]: (state) => state + 1,
-//     [todosSlice.actions.edit.type]: (state) => state + 1,
-//     [todosSlice.actions.toggle.type]: (state) => state + 1,
-//     [todosSlice.actions.remove.type]: (state) => state + 1,
-//   },
-// });
+const escListenerSlice = createSlice({
+  name: 'escListener',
+  initialState: false,
+  reducers: {
+    setListener: (state) => {
+      return true;
+    },
+  },
+});
 
-// export const {
-//   create: createTodoActionCreator,
-//   edit: editTodoActionCreator,
-//   toggle: toggleTodoActionCreator,
-//   remove: deleteTodoActionCreator,
-// } = todosSlice.actions;
+export const {
+  setNewColumnId: setNewCreateCardIdActionCreator,
+  clearId: clearNewCreateCardIdActionCreator,
+} = createCardColumnIdSlice.actions;
+
+export const { setListener: setListenerActionCreator } =
+  escListenerSlice.actions;
+
+export const {
+  setNewCard: setNewCardIdActionCreator,
+  clearId: clearShowCardIdActionCreator,
+} = showCardSlice.actions;
+
+export const {
+  create: createCommentdActionCreator,
+  onDelete: onCommentDeleteActionCreator,
+  changeText: changeCommentTextActionCreator,
+} = commentsSlice.actions;
 
 export const {
   onCardChecked: onCardCheckedActionCreator,
   onCardDelete: onCardDeleteActionCreator,
+  create: createCardActionCreator,
+  changeTitle: changeCardTitleActionCreator,
+  changeText: changeCardTextActionCreator,
 } = cardsSlice.actions;
+
+export const { changeTitle: changeColumnTitleActionCreator } =
+  columnsSlice.actions;
 
 export const { setUser: setUserActionCreator } = userSlice.actions;
 
@@ -283,6 +296,9 @@ const reducer = {
   columns: columnsSlice.reducer,
   comments: commentsSlice.reducer,
   user: userSlice.reducer,
+  escListener: escListenerSlice.reducer,
+  showCard: showCardSlice.reducer,
+  createCardColumnId: createCardColumnIdSlice.reducer,
 };
 
 export default configureStore({
