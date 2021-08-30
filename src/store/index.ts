@@ -1,4 +1,7 @@
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { cards, columns, comments, user } from '../types';
 import StorageServise from './StorageServise';
 
@@ -291,7 +294,12 @@ export const { changeTitle: changeColumnTitleActionCreator } =
 
 export const { setUser: setUserActionCreator } = userSlice.actions;
 
-const reducer = {
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const reducer = combineReducers({
   cards: cardsSlice.reducer,
   columns: columnsSlice.reducer,
   comments: commentsSlice.reducer,
@@ -299,8 +307,14 @@ const reducer = {
   escListener: escListenerSlice.reducer,
   showCard: showCardSlice.reducer,
   createCardColumnId: createCardColumnIdSlice.reducer,
-};
+});
 
-export default configureStore({
+const asd = persistReducer(persistConfig, reducer);
+
+export const store = configureStore({
   reducer,
 });
+
+export const persistor = persistStore(store);
+
+// export default { store, persistor };
