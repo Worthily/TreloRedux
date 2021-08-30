@@ -1,16 +1,45 @@
-import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  createSlice,
+  PayloadAction,
+  getDefaultMiddleware,
+} from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { cards, columns, comments, user } from '../types';
-import StorageServise from './StorageServise';
 
-const appStorage = new StorageServise();
-
-const cardsInitialState: cards[] = appStorage.getCards();
-const columnsInitialState: columns[] = appStorage.getColumns();
-const commentsInitialState: comments[] = appStorage.getComments();
-const userInitialState: user = appStorage.getUser();
+const cardsInitialState: cards[] = [
+  {
+    id: 'w1',
+    title: 'Отчет',
+    text: 'Лишь сделанные на базе интернет-аналитики выводы ассоциативно распределены по отраслям. Как принято считать, акционеры крупнейших компаний освещают чрезвычайно интересные особенности картины в целом, однако',
+    checked: false,
+    author: 'Дмитрий',
+    columnId: 'ToDo',
+  },
+];
+const columnsInitialState: columns[] = [
+  { id: 'ToDo', title: 'To Do' },
+  { id: 'InProgress', title: 'In progress' },
+  { id: 'Testing', title: 'Testing' },
+  { id: 'Done', title: 'Done' },
+];
+const commentsInitialState: comments[] = [
+  {
+    id: 'c1',
+    author: 'Димасик',
+    text: 'деланные на базе интернет-аналитики выводы ассоциативно распределены',
+    card: 'w1',
+  },
+  {
+    id: 'c2',
+    author: 'Димасик',
+    text: 'деланные на базе интернет-аналитики выводы ассоциативно распределены',
+    card: 'w1',
+  },
+];
+const userInitialState: user = '';
 
 const userSlice = createSlice({
   name: 'user',
@@ -18,7 +47,6 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, { payload }: PayloadAction<{ userName: user }>) => {
       if (payload.userName !== state) {
-        appStorage.setUser(payload.userName);
         return payload.userName;
       }
     },
@@ -40,7 +68,6 @@ const columnsSlice = createSlice({
           }
           return column;
         });
-        appStorage.setColumns(newArr);
         return newArr;
       }
     },
@@ -89,7 +116,6 @@ const cardsSlice = createSlice({
         };
 
         const newCards = [...state, card];
-        appStorage.setCards(newCards);
         return newCards;
       }
     },
@@ -100,14 +126,12 @@ const cardsSlice = createSlice({
         }
         return item;
       });
-      appStorage.setCards(newArr);
       return newArr;
     },
     onCardDelete: (state, { payload }: PayloadAction<{ cardId: string }>) => {
       let newArr: cards[] = state.filter((elem) => {
         return elem.id !== payload.cardId;
       });
-      appStorage.setCards(newArr);
       return newArr;
     },
     changeTitle: (
@@ -121,7 +145,6 @@ const cardsSlice = createSlice({
           }
           return card;
         });
-        appStorage.setCards(newArr);
         return newArr;
       }
     },
@@ -136,7 +159,6 @@ const cardsSlice = createSlice({
           }
           return card;
         });
-        appStorage.setCards(newArr);
         return newArr;
       }
     },
@@ -173,12 +195,11 @@ const commentsSlice = createSlice({
         const comment = {
           id: `c${commentId}`,
           card: payload.cardId,
-          author: payload.author, //todo
+          author: payload.author,
           text: payload.text,
         };
 
         const newArr = [...state, comment];
-        appStorage.setComments(newArr);
         return newArr;
       }
     },
@@ -186,7 +207,6 @@ const commentsSlice = createSlice({
       const filteredComments = state.filter((comment) => {
         return !payload.ids.includes(comment.id);
       });
-      appStorage.setComments(filteredComments);
       return filteredComments;
     },
     changeText: (
@@ -200,7 +220,6 @@ const commentsSlice = createSlice({
           }
           return comment;
         });
-        appStorage.setComments(newArr);
       }
     },
   },
@@ -212,7 +231,6 @@ const commentsSlice = createSlice({
       const filteredComments = state.filter((comment) => {
         return payload.cardId !== comment.card;
       });
-      appStorage.setComments(filteredComments);
       return filteredComments;
     },
   },
@@ -309,12 +327,13 @@ const reducer = combineReducers({
   createCardColumnId: createCardColumnIdSlice.reducer,
 });
 
-const asd = persistReducer(persistConfig, reducer);
+const persistedReducer = persistReducer(persistConfig, reducer);
 
 export const store = configureStore({
-  reducer,
+  reducer: persistedReducer,
+  middleware: getDefaultMiddleware({
+    serializableCheck: false,
+  }),
 });
 
 export const persistor = persistStore(store);
-
-// export default { store, persistor };
