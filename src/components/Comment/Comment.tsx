@@ -4,12 +4,8 @@ import changeBtn from '../../assets/img/change-white.png';
 import CommentChange from '../../ui/CommentChange';
 import { comments } from '../../types';
 
-function Comment(props: {
-  comment: comments;
-  onDelete(id: string[]): void;
-  onChange(id: string, text: string): void;
-}) {
-  const { comment, onDelete, onChange } = props;
+function Comment(props: { comment: comments; onDelete(id: string[]): void }) {
+  const { comment, onDelete } = props;
   const [text, setText] = useState(comment.text);
   const [change, setChange] = useState(false);
 
@@ -36,9 +32,7 @@ function Comment(props: {
           </div>
           <div
             onClick={() => {
-              const idArr: string[] = [];
-              idArr.push(comment.id);
-              onDelete(idArr);
+              onDelete([comment.id]);
             }}
             className="comment__dell-btn">
             <img src={dellImg} alt="delete" className="comment__dell-btn-img" />
@@ -52,7 +46,6 @@ function Comment(props: {
         id={comment.id}
         text={text}
         setChange={setChange}
-        onChange={onChange}
         setText={(text: string) => {
           setText(text);
         }}

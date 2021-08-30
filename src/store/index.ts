@@ -216,7 +216,7 @@ const commentsSlice = createSlice({
       if (payload.text.trim()) {
         const newArr = state.map((comment) => {
           if (comment.id === payload.id) {
-            return { ...comment, text: payload.text };
+            comment.text = payload.text;
           }
           return comment;
         });

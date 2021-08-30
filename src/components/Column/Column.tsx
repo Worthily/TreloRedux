@@ -11,12 +11,12 @@ import {
 } from '../../store';
 
 function Column(props: { column: columns; commentsCount(id: string): number }) {
-  const dispatch = useDispatch();
   const { id, title } = props.column;
   const cards = useSelector((state: state) => state.cards);
   const { commentsCount } = props;
   const [columnTitle, setTitle] = useState(title);
   const [change, setChange] = useState(false);
+  const dispatch = useDispatch();
 
   function onChangeBtnClick(): void {
     setChange(!change);

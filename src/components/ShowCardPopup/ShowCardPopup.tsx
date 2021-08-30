@@ -150,11 +150,6 @@ function ShowCardPopup(props: {
               onDelete={() => {
                 dispatch(onCommentDeleteActionCreator({ ids: [item.id] }));
               }}
-              onChange={(commentId: string, text: string) => {
-                dispatch(
-                  changeCommentTextActionCreator({ id: item.id, text: text }),
-                );
-              }}
             />
           </li>
         );

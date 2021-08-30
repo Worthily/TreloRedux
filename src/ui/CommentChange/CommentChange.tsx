@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeCommentTextActionCreator } from '../../store';
 
 function CommentChange(props: {
   id: string;
   text: string;
-  onChange(id: string, text: string): void;
   setChange(status: boolean): void;
   setText(text: string): void;
 }) {
   const [text, setText] = useState(props.text);
+  const dispatch = useDispatch();
+
   function onValueChange(e: React.FormEvent<HTMLTextAreaElement>): void {
     setText(e.currentTarget.value);
   }
@@ -16,7 +19,7 @@ function CommentChange(props: {
     e.preventDefault();
     const test = text.replace(/\s/g, '');
     if (test !== '') {
-      props.onChange(props.id, text);
+      dispatch(changeCommentTextActionCreator({ id: props.id, text: text }));
       props.setChange(false);
       props.setText(text);
     }
