@@ -6,18 +6,17 @@ import changeBtn from '../../assets/img/change-white.png';
 import Comment from '../Comment';
 import CardTitleChange from '../../ui/CardTitleChange';
 import CardTextChange from '../../ui/CardTextChange';
-import { cards, comments, user, columns, state } from '../../types';
+import { cards, comments, state } from '../../types';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   createCommentdActionCreator,
   onCardDeleteActionCreator,
   changeCardTitleActionCreator,
   changeCardTextActionCreator,
-  onCommentDeleteActionCreator,
-  changeCommentTextActionCreator,
   clearShowCardIdActionCreator,
   setListenerActionCreator,
 } from '../../store';
+import { Form, Field } from 'react-final-form';
 
 function ShowCardPopup(props: {
   column: string;
@@ -31,7 +30,7 @@ function ShowCardPopup(props: {
   const { id, title, text, author } = props.card;
   const [titleChange, setTitleChange] = useState(false);
   const [textChange, setTextChange] = useState(false);
-  const [commentText, setCommentText] = useState('');
+  const [commentText] = useState('');
   const [cardTitle, setTitle] = useState(title);
   const [cardText, setText] = useState(text);
 
@@ -42,26 +41,6 @@ function ShowCardPopup(props: {
         dispatch(clearShowCardIdActionCreator());
       }
     });
-  }
-
-  function onCommentValueChange(e: React.FormEvent<HTMLInputElement>): void {
-    if (e.currentTarget.value !== '') {
-      setCommentText(e.currentTarget.value);
-    }
-  }
-
-  function onCommentSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (commentText.trim()) {
-      dispatch(
-        createCommentdActionCreator({
-          cardId: id,
-          author: user,
-          text: commentText,
-        }),
-      );
-    }
-    setCommentText('');
   }
 
   if (!listener) {
@@ -145,12 +124,7 @@ function ShowCardPopup(props: {
       if (item) {
         return (
           <li key={item.id} className="show-card__comment-item">
-            <Comment
-              comment={item}
-              onDelete={() => {
-                dispatch(onCommentDeleteActionCreator({ ids: [item.id] }));
-              }}
-            />
+            <Comment comment={item} />
           </li>
         );
       }
@@ -181,22 +155,44 @@ function ShowCardPopup(props: {
           <p className="show-card__text-prefix">Описание:</p>
           {cardTextElement}
         </div>
-        <form onSubmit={onCommentSubmit} className="show-card__comment-form">
-          <input
-            onChange={onCommentValueChange}
-            type="text"
-            value={commentText}
-            placeholder="Оставить комментарий"
-            className="show-card__comment-input"
-          />
-          <button className="show-card__comment-send-btn">
-            <img
-              src={sendBtn}
-              alt="send"
-              className="show-card__comment-send-btn-img"
-            />
-          </button>
-        </form>
+
+        <Form
+          onSubmit={(formObj: { text: string }) => {
+            if (formObj.text) {
+              if (formObj.text.trim()) {
+                dispatch(
+                  createCommentdActionCreator({
+                    cardId: id,
+                    author: user,
+                    text: formObj.text,
+                  }),
+                );
+              }
+            }
+          }}>
+          {({ handleSubmit }) => (
+            <form onSubmit={handleSubmit} className="show-card__comment-form">
+              <Field
+                name="text"
+                type="text"
+                value={commentText}
+                placeholder="Оставить комментарий"
+                className="show-card__comment-input">
+                {({ input }) => (
+                  <input className="show-card__comment-input" {...input} />
+                )}
+              </Field>
+              <button type="submit" className="show-card__comment-send-btn">
+                <img
+                  src={sendBtn}
+                  alt="send"
+                  className="show-card__comment-send-btn-img"
+                />
+              </button>
+            </form>
+          )}
+        </Form>
+
         <ul className="show-card__comment-wrapper">{comments}</ul>
       </div>
     </div>

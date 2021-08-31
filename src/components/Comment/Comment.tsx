@@ -3,9 +3,12 @@ import dellImg from '../../assets/img/delete.svg';
 import changeBtn from '../../assets/img/change-white.png';
 import CommentChange from '../../ui/CommentChange';
 import { comments } from '../../types';
+import { useDispatch } from 'react-redux';
+import { onCommentDeleteActionCreator } from '../../store';
 
-function Comment(props: { comment: comments; onDelete(id: string[]): void }) {
-  const { comment, onDelete } = props;
+function Comment(props: { comment: comments }) {
+  const dispatch = useDispatch();
+  const { comment } = props;
   const [text, setText] = useState(comment.text);
   const [change, setChange] = useState(false);
 
@@ -26,13 +29,13 @@ function Comment(props: { comment: comments; onDelete(id: string[]): void }) {
           <div onClick={onStartChange} className="comment__change-btn">
             <img
               src={changeBtn}
-              alt="delete"
+              alt="change"
               className="comment__change-btn-img"
             />
           </div>
           <div
             onClick={() => {
-              onDelete([comment.id]);
+              dispatch(onCommentDeleteActionCreator({ ids: [comment.id] }));
             }}
             className="comment__dell-btn">
             <img src={dellImg} alt="delete" className="comment__dell-btn-img" />

@@ -38,7 +38,7 @@ function Column(props: { column: columns; commentsCount(id: string): number }) {
         setTitle={(title: string) => {
           setTitle(title);
         }}
-        getTitle={(title: string) => {
+        getNewTitle={(title: string) => {
           dispatch(
             changeColumnTitleActionCreator({ columnId: id, newTitle: title }),
           );

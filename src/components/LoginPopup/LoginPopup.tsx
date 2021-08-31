@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { cards, comments, user, columns, state } from '../../types';
+import { useDispatch } from 'react-redux';
 import { setUserActionCreator } from '../../store';
 
 function LoginPopup() {

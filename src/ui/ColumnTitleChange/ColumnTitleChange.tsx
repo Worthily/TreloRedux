@@ -3,7 +3,7 @@ import React from 'react';
 function ColumnTitleChange(props: {
   title: string;
   setTitle(title: string): void;
-  getTitle(title: string): void;
+  getNewTitle(title: string): void;
   setChange(status: boolean): void;
 }) {
   function onValueChange(e: React.FormEvent<HTMLInputElement>): void {
@@ -13,7 +13,7 @@ function ColumnTitleChange(props: {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (props.title !== '') {
-      props.getTitle(props.title);
+      props.getNewTitle(props.title);
       props.setChange(false);
     }
   }
