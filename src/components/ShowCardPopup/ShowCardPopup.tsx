@@ -11,7 +11,7 @@ import {
   createCommentdActionCreator,
   onCardDeleteActionCreator,
   clearShowCardIdActionCreator,
-} from '../../store';
+} from '../../store/actions';
 import { Form, Field } from 'react-final-form';
 
 function ShowCardPopup(props: {
@@ -27,10 +27,6 @@ function ShowCardPopup(props: {
   const [commentText] = useState('');
   const [cardTitle, setTitle] = useState(title);
   const [cardText, setText] = useState(text);
-
-  function onClose() {
-    dispatch(clearShowCardIdActionCreator());
-  }
 
   let cardElement: JSX.Element;
   if (!cardChange) {
@@ -115,7 +111,7 @@ function ShowCardPopup(props: {
         }
       }}
       onClick={() => {
-        onClose();
+        dispatch(clearShowCardIdActionCreator());
       }}>
       <div className="show-card__wrapper" onClick={(e) => e.stopPropagation()}>
         {cardElement}

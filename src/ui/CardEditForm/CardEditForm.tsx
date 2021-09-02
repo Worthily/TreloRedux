@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import {
   changeCardTitleActionCreator,
   changeCardTextActionCreator,
-} from '../../store';
+} from '../../store/actions';
 
 function CardEditForm(props: {
   id: string;

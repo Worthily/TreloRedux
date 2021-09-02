@@ -10,7 +10,7 @@ import {
   onCardCheckedActionCreator,
   onCardDeleteActionCreator,
   setNewCardIdActionCreator,
-} from '../../store';
+} from '../../store/actions';
 
 function Card(props: { card: Cards; commentsCount(): number }) {
   const dispatch = useDispatch();
