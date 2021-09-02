@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import dellImg from '../../assets/img/delete.svg';
 import changeBtn from '../../assets/img/change-white.png';
 import CommentChange from '../../ui/CommentChange';
-import { comments } from '../../types';
+import { Comments } from '../../types';
 import { useDispatch } from 'react-redux';
 import { onCommentDeleteActionCreator } from '../../store';
 
-function Comment(props: { comment: comments }) {
+function Comment(props: { comment: Comments }) {
   const dispatch = useDispatch();
   const { comment } = props;
   const [text, setText] = useState(comment.text);
@@ -18,7 +18,7 @@ function Comment(props: { comment: comments }) {
 
   let commentBody: JSX.Element;
 
-  if (change === false) {
+  if (!change) {
     commentBody = (
       <>
         <div className="comment__text-wrapper">

@@ -4,7 +4,7 @@ import notCheckImg from '../../assets/img/viewblack.png';
 import checkImg from '../../assets/img/viewgreen.png';
 import dellImg from '../../assets/img/delete.svg';
 import CommentsCount from '../CommentsCount';
-import { cards } from '../../types';
+import { Cards } from '../../types';
 import { useDispatch } from 'react-redux';
 import {
   onCardCheckedActionCreator,
@@ -12,7 +12,7 @@ import {
   setNewCardIdActionCreator,
 } from '../../store';
 
-function Card(props: { card: cards; commentsCount(): number }) {
+function Card(props: { card: Cards; commentsCount(): number }) {
   const dispatch = useDispatch();
   const { card, commentsCount } = props;
 

@@ -3,16 +3,16 @@ import Card from '../Card';
 import AddCardBtn from '../../ui/AddCardBtn';
 import changeImg from '../../assets/img/change.png';
 import ColumnTitleChange from '../../ui/ColumnTitleChange';
-import { columns, state } from '../../types';
+import { Columns, State } from '../../types';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   changeColumnTitleActionCreator,
   setNewCreateCardIdActionCreator,
 } from '../../store';
 
-function Column(props: { column: columns; commentsCount(id: string): number }) {
+function Column(props: { column: Columns; commentsCount(id: string): number }) {
   const { id, title } = props.column;
-  const cards = useSelector((state: state) => state.cards);
+  const cards = useSelector((state: State) => state.cards);
   const { commentsCount } = props;
   const [columnTitle, setTitle] = useState(title);
   const [change, setChange] = useState(false);
