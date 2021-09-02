@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeCommentTextActionCreator } from '../../store';
+import { changeCommentTextActionCreator } from '../../store/actions';
 
 function CommentChange(props: {
   id: string;

@@ -4,7 +4,7 @@ import changeBtn from '../../assets/img/change-white.png';
 import CommentChange from '../../ui/CommentChange';
 import { Comments } from '../../types';
 import { useDispatch } from 'react-redux';
-import { onCommentDeleteActionCreator } from '../../store';
+import { onCommentDeleteActionCreator } from '../../store/actions';
 
 function Comment(props: { comment: Comments }) {
   const dispatch = useDispatch();

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   createCardActionCreator,
   clearNewCreateCardIdActionCreator,
-} from '../../store';
+} from '../../store/actions';
 import { Form, Field } from 'react-final-form';
 
 function CreateCard() {

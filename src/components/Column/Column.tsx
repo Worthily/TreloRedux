@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   changeColumnTitleActionCreator,
   setNewCreateCardIdActionCreator,
-} from '../../store';
+} from '../../store/actions';
 
 function Column(props: { column: Columns; commentsCount(id: string): number }) {
   const { id, title } = props.column;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUserActionCreator } from '../../store';
+import { setUserActionCreator } from '../../store/actions';
 
 function LoginPopup() {
   const dispatch = useDispatch();
