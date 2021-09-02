@@ -7,9 +7,9 @@ import {
 import { combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { cards, columns, comments, user } from '../types';
+import { Cards, Columns, Comments, User } from '../types';
 
-const cardsInitialState: cards[] = [
+const cardsInitialState: Cards[] = [
   {
     id: 'w1',
     title: 'Отчет',
@@ -19,13 +19,13 @@ const cardsInitialState: cards[] = [
     columnId: 'ToDo',
   },
 ];
-const columnsInitialState: columns[] = [
+const columnsInitialState: Columns[] = [
   { id: 'ToDo', title: 'To Do' },
   { id: 'InProgress', title: 'In progress' },
   { id: 'Testing', title: 'Testing' },
   { id: 'Done', title: 'Done' },
 ];
-const commentsInitialState: comments[] = [
+const commentsInitialState: Comments[] = [
   {
     id: 'c1',
     author: 'Димасик',
@@ -39,13 +39,13 @@ const commentsInitialState: comments[] = [
     card: 'w1',
   },
 ];
-const userInitialState: user = '';
+const userInitialState: User = '';
 
 const userSlice = createSlice({
   name: 'user',
   initialState: userInitialState,
   reducers: {
-    setUser: (state, { payload }: PayloadAction<{ userName: user }>) => {
+    setUser: (state, { payload }: PayloadAction<{ userName: User }>) => {
       if (payload.userName !== state) {
         return payload.userName;
       }
@@ -129,7 +129,7 @@ const cardsSlice = createSlice({
       return newArr;
     },
     onCardDelete: (state, { payload }: PayloadAction<{ cardId: string }>) => {
-      let newArr: cards[] = state.filter((elem) => {
+      let newArr: Cards[] = state.filter((elem) => {
         return elem.id !== payload.cardId;
       });
       return newArr;
@@ -270,23 +270,10 @@ const createCardColumnIdSlice = createSlice({
   },
 });
 
-const escListenerSlice = createSlice({
-  name: 'escListener',
-  initialState: false,
-  reducers: {
-    setListener: (state) => {
-      return true;
-    },
-  },
-});
-
 export const {
   setNewColumnId: setNewCreateCardIdActionCreator,
   clearId: clearNewCreateCardIdActionCreator,
 } = createCardColumnIdSlice.actions;
-
-export const { setListener: setListenerActionCreator } =
-  escListenerSlice.actions;
 
 export const {
   setNewCard: setNewCardIdActionCreator,
@@ -322,7 +309,6 @@ const reducer = combineReducers({
   columns: columnsSlice.reducer,
   comments: commentsSlice.reducer,
   user: userSlice.reducer,
-  escListener: escListenerSlice.reducer,
   showCard: showCardSlice.reducer,
   createCardColumnId: createCardColumnIdSlice.reducer,
 });

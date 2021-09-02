@@ -1,4 +1,4 @@
-export type cards = {
+export type Cards = {
   id: string;
   title: string;
   text: string;
@@ -7,26 +7,25 @@ export type cards = {
   columnId: string;
 };
 
-export type columns = {
+export type Columns = {
   id: string;
   title: string;
 };
 
-export type comments = {
+export type Comments = {
   id: string;
   author: string;
   text: string;
   card: string;
 };
 
-export type user = string;
+export type User = string;
 
-export type state = {
-  user: user;
-  comments: comments[];
-  cards: cards[];
-  columns: columns[];
-  escListener: boolean;
+export type State = {
+  user: User;
+  comments: Comments[];
+  cards: Cards[];
+  columns: Columns[];
   showCard: string;
   createCardColumnId: string;
 };

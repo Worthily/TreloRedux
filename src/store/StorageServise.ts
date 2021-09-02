@@ -1,4 +1,4 @@
-import { cards, columns, comments, user } from '../types';
+import { Cards } from '../types';
 
 // class StorageServise {
 //   private userKey = 'user';

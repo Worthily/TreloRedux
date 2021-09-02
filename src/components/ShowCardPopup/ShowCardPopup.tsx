@@ -1,119 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import dellImg from '../../assets/img/delete.svg';
 import closeImg from '../../assets/img/close.png';
 import sendBtn from '../../assets/img/send-button.png';
 import changeBtn from '../../assets/img/change-white.png';
 import Comment from '../Comment';
-import CardTitleChange from '../../ui/CardTitleChange';
-import CardTextChange from '../../ui/CardTextChange';
-import { cards, comments, state } from '../../types';
+import CardEditForm from '../../ui/CardEditForm';
+import { Cards, Comments, State } from '../../types';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   createCommentdActionCreator,
   onCardDeleteActionCreator,
-  changeCardTitleActionCreator,
-  changeCardTextActionCreator,
   clearShowCardIdActionCreator,
-  setListenerActionCreator,
 } from '../../store';
 import { Form, Field } from 'react-final-form';
 
 function ShowCardPopup(props: {
   column: string;
-  card: cards;
-  cardComments: comments[];
+  card: Cards;
+  cardComments: Comments[];
 }) {
   const dispatch = useDispatch();
-  const user = useSelector((state: state) => state.user);
-  const listener = useSelector((state: state) => state.escListener);
+  const user = useSelector((state: State) => state.user);
 
   const { id, title, text, author } = props.card;
-  const [titleChange, setTitleChange] = useState(false);
-  const [textChange, setTextChange] = useState(false);
+  const [cardChange, setCardChange] = useState(false);
   const [commentText] = useState('');
   const [cardTitle, setTitle] = useState(title);
   const [cardText, setText] = useState(text);
 
-  function addListen() {
-    document.addEventListener('keyup', (event) => {
-      if (event.keyCode === 27) {
-        dispatch(setListenerActionCreator());
-        dispatch(clearShowCardIdActionCreator());
-      }
-    });
+  function onClose() {
+    dispatch(clearShowCardIdActionCreator());
   }
 
-  if (!listener) {
-    addListen();
-  }
-
-  let headerTop: JSX.Element;
-  if (!titleChange) {
-    headerTop = (
-      <div className="show-card__header-wrapper">
-        <h2 className="show-card__header">{title}</h2>
-        <div
-          onClick={() => {
-            setTitleChange(true);
-          }}
-          className="show-card__header-chenge-btn">
-          <img
-            src={changeBtn}
-            alt="changeBtn"
-            className="show-card__header-chenge-btn-img"
-          />
-        </div>
-        <p className="show-card__author">{author}</p>
-        <p className="show-card__column">Колонка: {props.column}</p>
-      </div>
-    );
-  } else {
-    headerTop = (
-      <CardTitleChange
-        title={cardTitle}
-        setTitle={(title: string) => {
-          setTitle(title);
-        }}
-        onTitleChange={(title: string) => {
-          dispatch(changeCardTitleActionCreator({ cardId: id, title: title }));
-        }}
-        setTitleChange={(status: boolean) => {
-          setTitleChange(status);
-        }}
-      />
-    );
-  }
-
-  let cardTextElement: JSX.Element;
-  if (!textChange) {
-    cardTextElement = (
+  let cardElement: JSX.Element;
+  if (!cardChange) {
+    cardElement = (
       <>
-        <div
-          onClick={() => {
-            setTextChange(true);
-          }}
-          className="show-card__text-chenge-btn">
-          <img
-            src={changeBtn}
-            alt="changeBtn"
-            className="show-card__text-chenge-btn-img"
-          />
+        <div className="show-card__top">
+          <div className="show-card__header-wrapper">
+            <h2 className="show-card__header">{title}</h2>
+            <div
+              onClick={() => {
+                setCardChange(true);
+              }}
+              className="show-card__header-chenge-btn">
+              <img
+                src={changeBtn}
+                alt="changeBtn"
+                className="show-card__header-chenge-btn-img"
+              />
+            </div>
+            <p className="show-card__author">{author}</p>
+            <p className="show-card__column">Колонка: {props.column}</p>
+          </div>
+          <div
+            onClick={() => dispatch(onCardDeleteActionCreator({ cardId: id }))}
+            className="show-card__dell-btn">
+            <img src={dellImg} alt="dell" className="show-card__dell-btn-img" />
+          </div>
+          <div
+            onClick={() => dispatch(clearShowCardIdActionCreator())}
+            className="show-card__close-btn">
+            <img
+              src={closeImg}
+              alt="close"
+              className="show-card__close-btn-img"
+            />
+          </div>
         </div>
-        <p className="show-card__text">{text}</p>
+        <div className="show-card__text-wrapper">
+          <p className="show-card__text-prefix">Описание:</p>
+          <p className="show-card__text">{text}</p>
+        </div>
       </>
     );
   } else {
-    cardTextElement = (
-      <CardTextChange
+    cardElement = (
+      <CardEditForm
+        id={id}
+        title={cardTitle}
         text={cardText}
-        setText={(text: string) => {
+        setText={(text) => {
           setText(text);
         }}
-        onTextChange={(text: string) => {
-          dispatch(changeCardTextActionCreator({ cardId: id, text: text }));
+        setTitle={(title) => {
+          setTitle(title);
         }}
-        setTextChange={(status: boolean) => {
-          setTextChange(status);
+        setCardChange={() => {
+          setCardChange(false);
         }}
       />
     );
@@ -132,30 +106,19 @@ function ShowCardPopup(props: {
   );
 
   return (
-    <div className="show-card">
-      <div className="show-card__wrapper">
-        <div className="show-card__top">
-          {headerTop}
-          <div
-            onClick={() => dispatch(onCardDeleteActionCreator({ cardId: id }))}
-            className="show-card__dell-btn">
-            <img src={dellImg} alt="dell" className="show-card__dell-btn-img" />
-          </div>
-          <div
-            onClick={() => dispatch(clearShowCardIdActionCreator())}
-            className="show-card__close-btn">
-            <img
-              src={closeImg}
-              alt="close"
-              className="show-card__close-btn-img"
-            />
-          </div>
-        </div>
-        <div className="show-card__text-wrapper">
-          <p className="show-card__text-prefix">Описание:</p>
-          {cardTextElement}
-        </div>
-
+    <div
+      tabIndex={-1}
+      className="show-card"
+      onKeyDown={(e: React.KeyboardEvent) => {
+        if (e.keyCode === 27) {
+          dispatch(clearShowCardIdActionCreator());
+        }
+      }}
+      onClick={() => {
+        onClose();
+      }}>
+      <div className="show-card__wrapper" onClick={(e) => e.stopPropagation()}>
+        {cardElement}
         <Form
           onSubmit={(formObj: { text: string }) => {
             if (formObj.text) {
@@ -192,7 +155,6 @@ function ShowCardPopup(props: {
             </form>
           )}
         </Form>
-
         <ul className="show-card__comment-wrapper">{comments}</ul>
       </div>
     </div>
